@@ -36,6 +36,7 @@ class Board extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            winner: "...",
             freezeBoard: false,
             p1Count: 0,
             p2Count: 0,
@@ -69,7 +70,8 @@ class Board extends React.Component {
             history: [" ", " ", " ", " ", " ", " ", " ", " ", " "],
             tiles: this.getInitialTileState(),
             player: "X",
-            freezeBoard: false
+            freezeBoard: false,
+            winner: "..."
         })
     }
 
@@ -94,14 +96,16 @@ class Board extends React.Component {
                 // X win
                 this.setState({
                     p1Count: this.state.p1Count + 1,
-                    freezeBoard: true
+                    freezeBoard: true,
+                    winner: this.state.player
                 })
                 goCount = 0
             } else if (check(this.state.history) === "0") {
                 // 0 win
                 this.setState({
                     p2Count: this.state.p2Count + 1,
-                    freezeBoard: true
+                    freezeBoard: true,
+                    winner: this.state.player
                 })
                 goCount = 0
             } else if (!check(this.state.history)) {
@@ -109,6 +113,7 @@ class Board extends React.Component {
                 if (goCount > 8) {
                     // draw
                     this.setState({freezeBoard: true})
+                    this.setState({winner: "Draw"})
                     goCount = 0
                 }
             } else {
@@ -156,39 +161,41 @@ class Board extends React.Component {
             </Box>
         </>)
         return (
-            <div>
-                <Box sx={{
-                    paddingBottom: 4,
-                    display: 'flex',
-                    justifyContent: 'center'
-                }}>
-                    <Chip
-                        sx={{
-                            fontSize: 40,
-                            padding: 4
-                        }}
-                        variant="outlined"
-                        label={this.state.p1Count + " | " + this.state.p2Count}
-                    />
+            <Box sx={{
+                width: window.innerWidth,
+                height: window.innerHeight,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}>
+                <Box sx={{paddingRight: 4, display: 'flex', justifyContent: 'center', width: '333px'}}>
+                    <Chip sx={{fontSize: 40, padding: 4}}
+                          variant="outlined"
+                          label={"Winner: " + this.state.winner}/>
                 </Box>
-                <Box>{tiles}</Box>
-                <Box sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    paddingTop: 4,
-                }}>
-                    <Button sx={{
-                        height: '75px',
-                        width: '100px',
-                        fontSize: 20
-                    }}
-                            onClick={this.reset}
-                            variant={"contained"}
-                    >
-                        Reset
-                    </Button>
+                <Box>
+                    <Box sx={{paddingBottom: 4, display: 'flex', justifyContent: 'center'}}>
+                        <Chip
+                            sx={{fontSize: 40, padding: 4}}
+                            variant="outlined"
+                            label={this.state.p1Count + " | " + this.state.p2Count}/>
+                    </Box>
+                    <Box>{tiles}</Box>
+                    <Box sx={{display: 'flex', justifyContent: 'center', paddingTop: 4,}}>
+                        <Button sx={{height: '75px', width: '100px', fontSize: 20}}
+                                onClick={this.reset}
+                                variant={"contained"}
+                        >
+                            Reset
+                        </Button>
+                    </Box>
                 </Box>
-            </div>
+                <Box sx={{paddingLeft: 4, display: 'flex', justifyContent: 'center'}}>
+                    <Chip sx={{fontSize: 40, padding: 4, width: '236px'}}
+                          variant="outlined"
+                          label={this.state.player + "'s Turn"}/>
+                </Box>
+            </Box>
         );
     }
 }
